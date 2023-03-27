@@ -72,3 +72,10 @@ Plugins/*/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
+
+Plugins/Developer/RiderLink/*
+.vsconfig
+
+
+.idea/.idea.Proto3/.idea/vcs.xml
+.idea/*
