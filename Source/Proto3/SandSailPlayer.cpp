@@ -24,6 +24,8 @@ ASandSailPlayer::ASandSailPlayer()
 	RootComponent = Mesh;
 	Mast = CreateDefaultSubobject<UStaticMeshComponent>("Mast");
 	Mast->SetupAttachment(RootComponent);
+	Sail = CreateDefaultSubobject<UStaticMeshComponent>("Sail");
+	Sail->SetupAttachment(Mast);
 	
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
@@ -57,11 +59,14 @@ void ASandSailPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	Dt = DeltaTime;
-	MastRotation = FMath::Lerp(MastRotation, 0.0f, Dt * 10.0f);
+	MastRotation = FMath::Lerp(MastRotation, 0.0f, Dt);
 	Mast->SetRelativeRotation(FRotator{0,MastRotation,0});
 	FRotator rotation = Mesh->GetComponentRotation();
-	rotation.Yaw = FMath::Lerp(rotation.Yaw, rotation.Yaw + MastRotation, Dt);
+	rotation.Yaw = FMath::Lerp(rotation.Yaw, rotation.Yaw + MastRotation, Dt * 2);
 	Mesh->SetWorldRotation(rotation);
+	Mast->SetRelativeScale3D({SailLength, 1.0f, 1.0f});
+
+	Mesh->AddForce(Mesh->GetForwardVector() * 10000.0f * SailLength);
 }
 
 void ASandSailPlayer::Move(const FInputActionValue& Value)
@@ -79,17 +84,23 @@ void ASandSailPlayer::Move(const FInputActionValue& Value)
 
 		if (MovementVector.X > 0)
 		{
-			MastRotation = FMath::Lerp(MastRotation, 90.0f, Dt * 15.0f);
+			MastRotation = FMath::Lerp(MastRotation, 90.0f, Dt);
 		}
 		else if (MovementVector.X < 0)
 		{
-			MastRotation = FMath::Lerp(MastRotation, -90.f, Dt * 15.0f);
+			MastRotation = FMath::Lerp(MastRotation, -90.f, Dt);
 		}
 		// add movement
 		if (MovementVector.Y > 0)
-			Mesh->AddForce(Mesh->GetForwardVector() * 10000.0f);
+		{
+			SailLength = FMath::Clamp(SailLength + Dt, 0.1f, 1.0f);
+			//Mesh->AddForce(Mesh->GetForwardVector() * 10000.0f);
+		}
 		else if (MovementVector.Y < 0)
-			Mesh->AddForce(Mesh->GetForwardVector() * -5000.0f);
+		{
+			SailLength = FMath::Clamp(SailLength - Dt, 0.1f, 1.0f);
+			//Mesh->AddForce(Mesh->GetForwardVector() * -5000.0f);
+		}
 	}
 }
 

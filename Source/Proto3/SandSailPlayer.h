@@ -67,6 +67,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	class UStaticMeshComponent* Mast;
 
+	UPROPERTY(EditAnywhere)
+	class UStaticMeshComponent* Sail;
+
 	UPROPERTY()
 	class UArrowComponent* ArrowComponent;
 
@@ -78,6 +81,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	float Dt{};
+
+	UPROPERTY(VisibleAnywhere)
+	float SailLength{0.1};
 
 public:
 	UPROPERTY(EditAnywhere, Category= UI)
