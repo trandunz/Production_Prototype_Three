@@ -54,6 +54,9 @@ void ASandSailPlayer::Tick(float DeltaTime)
 	Dt = DeltaTime;
 	MastRotation = FMath::Lerp(MastRotation, 0.0f, Dt * 10.0f);
 	Mast->SetRelativeRotation(FRotator{0,MastRotation,0});
+	FRotator rotation = Mesh->GetComponentRotation();
+	rotation.Yaw = FMath::Lerp(rotation.Yaw, rotation.Yaw + MastRotation, Dt);
+	Mesh->SetWorldRotation(rotation);
 }
 
 void ASandSailPlayer::Move(const FInputActionValue& Value)
