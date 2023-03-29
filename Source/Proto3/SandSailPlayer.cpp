@@ -10,6 +10,9 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Blueprint/UserWidget.h"
+#include "Controllers/ProtoPlayerController.h"
+#include "Widgets/GameHUD.h"
 
 // Sets default values
 ASandSailPlayer::ASandSailPlayer()
@@ -45,6 +48,8 @@ void ASandSailPlayer::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+
+	SetupGameHUDComponent();
 }
 
 // Called every frame
@@ -99,6 +104,27 @@ void ASandSailPlayer::Look(const FInputActionValue& Value)
 	}
 }
 
+void ASandSailPlayer::Pause()
+{
+	if (GameHUD)
+	{
+		GameHUD->EnableDisableMenu();
+	}
+}
+
+void ASandSailPlayer::SetupGameHUDComponent()
+{
+	if (auto* playerController = Cast<AProtoPlayerController>(Controller))
+	{
+		if (GameHUDPrefab && GameHUD == nullptr)
+		{
+			GameHUD = CreateWidget<UGameHUD>(playerController, GameHUDPrefab);
+			GameHUD->AddToViewport();
+			playerController->SetInputMode(FInputModeGameOnly{});
+		}
+	}
+}
+
 // Called to bind functionality to input
 void ASandSailPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -114,7 +140,7 @@ void ASandSailPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 		//Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ASandSailPlayer::Look);
-
+		EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, this, &ASandSailPlayer::Pause);
 	}
 }
 
