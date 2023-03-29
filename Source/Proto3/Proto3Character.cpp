@@ -49,6 +49,11 @@ AProto3Character::AProto3Character()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+	Mast = CreateDefaultSubobject<UStaticMeshComponent>("Mast");
+	Mast->SetupAttachment(RootComponent);
+
+	Speeder = CreateDefaultSubobject<UStaticMeshComponent>("Speeder");
+	Speeder->SetupAttachment(RootComponent);
 }
 
 void AProto3Character::BeginPlay()
@@ -66,6 +71,14 @@ void AProto3Character::BeginPlay()
 	}
 }
 
+void AProto3Character::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	Dt = DeltaSeconds;
+	MastRotation = FMath::Lerp(MastRotation, -90.0f, Dt * 10.0f);
+	Mast->SetRelativeRotation(FRotator{0,MastRotation,0});
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 
@@ -75,8 +88,8 @@ void AProto3Character::SetupPlayerInputComponent(class UInputComponent* PlayerIn
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
 		
 		//Jumping
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+		//EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
+		//EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
 		//Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AProto3Character::Move);
@@ -101,6 +114,14 @@ void AProto3Character::Move(const FInputActionValue& Value)
 		// get right vector 
 		const FVector RightDirection =  GetActorRightVector();
 
+		if (MovementVector.X > 0)
+		{
+			MastRotation = FMath::Lerp(MastRotation, 0.0f, Dt * 15.0f);
+		}
+		else if (MovementVector.X < 0)
+		{
+			MastRotation = FMath::Lerp(MastRotation, -180.0f, Dt * 15.0f);
+		}
 		// add movement 
 		AddMovementInput(ForwardDirection, MovementVector.Y);
 		AddMovementInput(RightDirection, MovementVector.X);
