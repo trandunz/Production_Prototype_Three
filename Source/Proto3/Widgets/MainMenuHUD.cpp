@@ -2,4 +2,15 @@
 
 
 #include "MainMenuHUD.h"
+#include "Kismet/GameplayStatics.h"
 
+void UMainMenuHUD::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+
+	if (auto* controller = UGameplayStatics::GetPlayerController(GetWorld(), 0))
+	{
+		controller->SetInputMode(FInputModeUIOnly{});
+		controller->bShowMouseCursor = true;
+	}
+}

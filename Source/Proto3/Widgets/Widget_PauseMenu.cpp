@@ -14,7 +14,11 @@ void UWidget_PauseMenu::EnableDisableMenu()
 		{
 			controller->SetInputMode(FInputModeUIOnly{});
 			controller->bShowMouseCursor = true;
+
+			controller->Pause();
 		}
+
+		
 	}
 	else
 	{
@@ -22,6 +26,8 @@ void UWidget_PauseMenu::EnableDisableMenu()
 		{
 			controller->bShowMouseCursor = false;
 			controller->SetInputMode(FInputModeGameOnly{});
+
+			controller->SetPause(false);
 		}
 
 		SetVisibility(ESlateVisibility::Hidden);

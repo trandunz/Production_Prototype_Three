@@ -13,5 +13,7 @@ UCLASS()
 class PROTO3_API UMainMenuHUD : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
+public:
+	virtual void NativeOnInitialized() override;
 };
