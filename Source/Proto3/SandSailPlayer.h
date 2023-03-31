@@ -68,7 +68,10 @@ public:
 	class UStaticMeshComponent* Mast;
 
 	UPROPERTY(EditAnywhere)
-	class UStaticMeshComponent* Sail;
+	class USkeletalMeshComponent* SailSkele;
+
+	UPROPERTY(EditAnywhere)
+	class UWindDirectionalSourceComponent* WindDirection;
 
 	UPROPERTY()
 	class UArrowComponent* ArrowComponent;

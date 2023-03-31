@@ -13,6 +13,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Controllers/ProtoPlayerController.h"
 #include "Widgets/GameHUD.h"
+#include "Components/WindDirectionalSourceComponent.h"
 
 // Sets default values
 ASandSailPlayer::ASandSailPlayer()
@@ -24,8 +25,10 @@ ASandSailPlayer::ASandSailPlayer()
 	RootComponent = Mesh;
 	Mast = CreateDefaultSubobject<UStaticMeshComponent>("Mast");
 	Mast->SetupAttachment(RootComponent);
-	Sail = CreateDefaultSubobject<UStaticMeshComponent>("Sail");
-	Sail->SetupAttachment(Mast);
+	SailSkele = CreateDefaultSubobject<USkeletalMeshComponent>("SailSkele");
+	SailSkele->SetupAttachment(Mast);
+	WindDirection = CreateDefaultSubobject<UWindDirectionalSourceComponent>("Wind");
+	WindDirection->SetupAttachment(Mast);
 	
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
