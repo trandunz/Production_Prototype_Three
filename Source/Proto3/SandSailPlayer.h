@@ -85,6 +85,9 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	float SailLength{0.1};
 
+	UPROPERTY(EditAnywhere)
+	float MaxSpeed{1600};
+
 public:
 	UPROPERTY(EditAnywhere, Category= UI)
 	TSubclassOf<class UGameHUD> GameHUDPrefab;

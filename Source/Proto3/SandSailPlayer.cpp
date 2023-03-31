@@ -66,7 +66,8 @@ void ASandSailPlayer::Tick(float DeltaTime)
 	Mesh->SetWorldRotation(rotation);
 	Mast->SetRelativeScale3D({SailLength, 1.0f, 1.0f});
 
-	Mesh->AddForce(Mesh->GetForwardVector() * 10000.0f * SailLength);
+	if ((GetVelocity() + ((Mesh->GetForwardVector() * 10000.0f * SailLength) * DeltaTime)).Length() <= MaxSpeed)
+		Mesh->AddForce(Mesh->GetForwardVector() * 10000.0f * SailLength);
 }
 
 void ASandSailPlayer::Move(const FInputActionValue& Value)
