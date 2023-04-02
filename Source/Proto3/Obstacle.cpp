@@ -15,9 +15,9 @@ AObstacle::AObstacle()
 	}
 }
 
-auto AObstacle::GetDistanceFromPlayer()
+int AObstacle::GetDistanceFromPlayer()
 {
-	
+	return 1;
 }
 
 // Called when the game starts or when spawned
