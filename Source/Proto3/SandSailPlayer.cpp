@@ -45,6 +45,8 @@ void ASandSailPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
+	CameraBoom->SetRelativeRotation({0,-180,0});
+
 	//Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
@@ -112,13 +114,12 @@ void ASandSailPlayer::Move(const FInputActionValue& Value)
 
 void ASandSailPlayer::Look(const FInputActionValue& Value)
 {
-	// input is a Vector2D
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
 
-	if (Controller != nullptr)
-	{
-		// add yaw and pitch input to controller
-	}
+	FRotator rotation = CameraBoom->GetRelativeRotation();
+	rotation.Yaw = rotation.Yaw + LookAxisVector.X * Dt * 100.0f;
+	rotation.Pitch = FMath::Clamp(rotation.Pitch - LookAxisVector.Y * Dt * 100.0f, -89.0f, 89.9f);
+	CameraBoom->SetRelativeRotation(rotation);
 }
 
 void ASandSailPlayer::Pause()
