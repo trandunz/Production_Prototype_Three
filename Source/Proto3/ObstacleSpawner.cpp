@@ -57,9 +57,9 @@ void AObstacleSpawner::CleanUpObstacles()
 
 void AObstacleSpawner::SpawnStarterObstacles()
 {
-	for (auto element : Obstacles)
+	for (int i = 0; i < maxObstacles; i++)
 	{
-		element = GetWorld()->SpawnActor<AObstacle>(ObstaclePrefabs[FMath::RandRange(0, ObstaclePrefabs.Num() - 1)]);
+		Obstacles[i] = GetWorld()->SpawnActor<AObstacle>(ObstaclePrefabs[FMath::RandRange(0, ObstaclePrefabs.Num() - 1)]);
 	}
 }
 
