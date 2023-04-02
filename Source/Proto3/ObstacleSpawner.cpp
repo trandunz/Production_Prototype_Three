@@ -23,19 +23,40 @@ void AObstacleSpawner::SpawnObstacle()
 	if (Obstacles.Num() < maxObstacles && ObstaclePrefabs.Num() > 0)
 	{
 		int num = FMath::RandRange(0, ObstaclePrefabs.Num() - 1);
+		if (ObstaclePrefabs[num])
+		{
+			GetWorld()->SpawnActor<AObstacle>(ObstaclePrefabs[num]);
+			currentObstacleCount += 1;
+		}
 	}
 }
 
 void AObstacleSpawner::CleanUpObstacles()
 {
-	
+	for (auto element : Obstacles)
+	{
+		if (element)
+		{
+			if (element->GetDistanceFromPlayer() > 50)
+			{
+				element->Destroy();
+				element = nullptr;
+			}
+		}
+	}
 }
 
 // Called when the game starts or when spawned
 void AObstacleSpawner::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	Obstacles.SetNum(maxObstacles);
+
+	for (auto element : Obstacles)
+	{
+		element = nullptr;
+	}
 }
 
 // Called every frame

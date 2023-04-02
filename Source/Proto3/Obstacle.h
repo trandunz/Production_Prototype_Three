@@ -17,7 +17,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* mesh;
 
-	void GetDistanceFromPlayer();
+	auto GetDistanceFromPlayer();
 
 protected:
 	// Called when the game starts or when spawned

@@ -26,6 +26,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	int32 maxObstacles = 10;
 
+	UPROPERTY(VisibleAnywhere)
+	int32 currentObstacleCount = 0;
+
 	
 	void SpawnObstacle();
 	void CleanUpObstacles();
