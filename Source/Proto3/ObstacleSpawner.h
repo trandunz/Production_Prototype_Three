@@ -30,8 +30,9 @@ public:
 	int32 currentObstacleCount = 0;
 
 	
-	void SpawnObstacle();
+	void SpawnObstacle(int _num);
 	void CleanUpObstacles();
+	void SpawnStarterObstacles();
 
 protected:
 	// Called when the game starts or when spawned
