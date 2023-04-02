@@ -10,6 +10,25 @@ AObstacleSpawner::AObstacleSpawner()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	Obstacles.SetNum(maxObstacles);
+
+    for (auto element : Obstacles)
+    {
+	    element = nullptr;
+    }
+}
+
+void AObstacleSpawner::SpawnObstacle()
+{
+	if (Obstacles.Num() < maxObstacles && ObstaclePrefabs.Num() > 0)
+	{
+		int num = FMath::RandRange(0, ObstaclePrefabs.Num() - 1);
+	}
+}
+
+void AObstacleSpawner::CleanUpObstacles()
+{
+	
 }
 
 // Called when the game starts or when spawned

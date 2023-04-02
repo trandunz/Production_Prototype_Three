@@ -12,6 +12,11 @@ AObstacle::AObstacle()
 
 }
 
+void AObstacle::GetDistanceFromPlayer()
+{
+	
+}
+
 // Called when the game starts or when spawned
 void AObstacle::BeginPlay()
 {

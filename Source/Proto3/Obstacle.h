@@ -17,6 +17,8 @@ public:
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* mesh;
 
+	void GetDistanceFromPlayer();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

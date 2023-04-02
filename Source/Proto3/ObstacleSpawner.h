@@ -20,6 +20,16 @@ public:
 	UPROPERTY(EditAnywhere)
 	TArray<TSubclassOf<AObstacle>> ObstaclePrefabs;
 
+	UPROPERTY(VisibleAnywhere)
+	TArray<AObstacle*> Obstacles;
+
+	UPROPERTY(EditAnywhere)
+	int32 maxObstacles = 10;
+
+	
+	void SpawnObstacle();
+	void CleanUpObstacles();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
