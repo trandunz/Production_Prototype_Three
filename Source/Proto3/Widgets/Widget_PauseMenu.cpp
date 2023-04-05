@@ -12,13 +12,13 @@ void UWidget_PauseMenu::EnableDisableMenu()
 
 		if (auto* controller = UGameplayStatics::GetPlayerController(GetWorld(), 0))
 		{
-			controller->SetInputMode(FInputModeUIOnly{});
+			//controller->SetInputMode(FInputModeUIOnly{});
+			controller->SetInputMode(FInputModeGameAndUI{});
+			
 			controller->bShowMouseCursor = true;
 
 			controller->Pause();
 		}
-
-		
 	}
 	else
 	{
