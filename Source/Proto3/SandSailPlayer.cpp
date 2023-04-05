@@ -75,6 +75,18 @@ void ASandSailPlayer::Tick(float DeltaTime)
 	
 	if ((GetVelocity() + ((Mesh->GetForwardVector() * 10000.0f * SailLength) * DeltaTime)).Length() <= MaxSpeed)
 		Mesh->AddForce(Mesh->GetForwardVector() * 10000.0f * SailLength);
+
+	// Check for death
+	if (Mesh->GetComponentRotation().Roll > 85.0f
+		|| Mesh->GetComponentRotation().Roll < -85.0f
+		|| Mesh->GetComponentRotation().Pitch > 85.0f
+		|| Mesh->GetComponentRotation().Pitch < -85.0f)
+	{
+		GameHUD->FadeOut(0.5f);
+		SetActorLocation(GetActorLocation() + FVector::UpVector * 500.0f, false, nullptr, ETeleportType::TeleportPhysics);
+		SetActorRotation(FRotator{}, ETeleportType::TeleportPhysics);
+		SailLength = 0.1f;
+	}
 }
 
 void ASandSailPlayer::Move(const FInputActionValue& Value)
@@ -147,7 +159,8 @@ void ASandSailPlayer::SetupGameHUDComponent()
 void ASandSailPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	// Set up action bindings
-	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
+	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
+	{
 		
 		//Jumping
 		//EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
