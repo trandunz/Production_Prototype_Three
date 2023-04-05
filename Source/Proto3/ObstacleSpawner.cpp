@@ -69,8 +69,10 @@ void AObstacleSpawner::SpawnStarterObstacles()
 		{
 			FNavLocation Result;
 			navSys->GetRandomPoint(Result);
+			FVector finalLocation = Result.Location;
+			finalLocation.Z -= 40.0f;
 			int num = FMath::RandRange(0, ObstaclePrefabs.Num() - 1);
-			Obstacles[i] = GetWorld()->SpawnActor<AObstacle>(ObstaclePrefabs[num], Result, FRotator());
+			Obstacles[i] = GetWorld()->SpawnActor<AObstacle>(ObstaclePrefabs[num], finalLocation, FRotator());
 		}
 	}
 	else
