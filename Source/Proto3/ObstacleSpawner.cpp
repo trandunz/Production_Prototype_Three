@@ -4,6 +4,9 @@
 #include "ObstacleSpawner.h"
 #include "Obstacle.h"
 
+#include "Ai/NavigationSystemBase.h"
+#include "NavigationSystem.h"
+
 // Sets default values
 AObstacleSpawner::AObstacleSpawner()
 {
@@ -60,13 +63,26 @@ void AObstacleSpawner::CleanUpObstacles()
 
 void AObstacleSpawner::SpawnStarterObstacles()
 {
-	for (int i = 0; i < maxObstacles; i++)
+	if (UNavigationSystemV1* navSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld()))
 	{
-		int num = FMath::RandRange(0, ObstaclePrefabs.Num() - 1);
-		int x = FMath::RandRange(-100000, 100000);
-		int z = FMath::RandRange(3000, 10000);
-		int y = FMath::RandRange(-100000, 100000);
-		Obstacles[i] = GetWorld()->SpawnActor<AObstacle>(ObstaclePrefabs[num], FVector(x, y, z), FRotator());
+		for (int i = 0; i < maxObstacles; i++)
+		{
+			FNavLocation Result;
+			navSys->GetRandomPoint(Result);
+			int num = FMath::RandRange(0, ObstaclePrefabs.Num() - 1);
+			Obstacles[i] = GetWorld()->SpawnActor<AObstacle>(ObstaclePrefabs[num], Result, FRotator());
+		}
+	}
+	else
+	{
+		for (int i = 0; i < maxObstacles; i++)
+		{
+			int num = FMath::RandRange(0, ObstaclePrefabs.Num() - 1);
+			int x = FMath::RandRange(-100000, 100000);
+			int z = FMath::RandRange(3000, 10000);
+			int y = FMath::RandRange(-100000, 100000);
+			Obstacles[i] = GetWorld()->SpawnActor<AObstacle>(ObstaclePrefabs[num], FVector(x, y, z), FRotator());
+		}		
 	}
 }
 
