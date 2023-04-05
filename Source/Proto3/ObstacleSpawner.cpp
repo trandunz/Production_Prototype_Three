@@ -25,7 +25,10 @@ void AObstacleSpawner::SpawnObstacle(int _num)
 		int num = FMath::RandRange(0, ObstaclePrefabs.Num() - 1);
 		if (ObstaclePrefabs[num])
 		{
-			Obstacles[_num] = GetWorld()->SpawnActor<AObstacle>(ObstaclePrefabs[num]);
+			int x = FMath::RandRange(-100, 100);
+			int y = FMath::RandRange(10, 50);
+			int z = FMath::RandRange(-100, 100);
+			Obstacles[_num] = GetWorld()->SpawnActor<AObstacle>(ObstaclePrefabs[num], FVector(x, y, z), FRotator());
 			currentObstacleCount += 1;
 		}
 	}
@@ -59,7 +62,11 @@ void AObstacleSpawner::SpawnStarterObstacles()
 {
 	for (int i = 0; i < maxObstacles; i++)
 	{
-		Obstacles[i] = GetWorld()->SpawnActor<AObstacle>(ObstaclePrefabs[FMath::RandRange(0, ObstaclePrefabs.Num() - 1)]);
+		int num = FMath::RandRange(0, ObstaclePrefabs.Num() - 1);
+		int x = FMath::RandRange(-100000, 100000);
+		int z = FMath::RandRange(3000, 10000);
+		int y = FMath::RandRange(-100000, 100000);
+		Obstacles[i] = GetWorld()->SpawnActor<AObstacle>(ObstaclePrefabs[num], FVector(x, y, z), FRotator());
 	}
 }
 
