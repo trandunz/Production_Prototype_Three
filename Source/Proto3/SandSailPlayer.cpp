@@ -166,18 +166,14 @@ void ASandSailPlayer::CheckForMonuments()
 	auto gamemode = Cast<AProto3GameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	for(auto monument : gamemode->Monuments)
 	{
-		FHitResult Hit;
-		FVector TraceStart = FollowCamera->GetComponentLocation();
-		FVector TraceEnd = monument->GetActorLocation();
-		FCollisionQueryParams QueryParams;
-		QueryParams.AddIgnoredActor(this);
-		GetWorld()->LineTraceSingleByChannel(Hit, TraceStart, TraceEnd, ECC_Visibility, QueryParams);
-		if (FVector::Distance(GetActorLocation(), monument->GetActorLocation()) < 2000.0f && Hit.GetActor() && Cast<AMonument>(Hit.GetActor()))
+		if (FVector::Distance(GetActorLocation(), monument->GetActorLocation()) < 6000.0f)
 		{
 			if (!monument->IsSeen)
 			{
 				monument->IsSeen = true;
-				FollowCamera->SetWorldRotation(UKismetMathLibrary::FindLookAtRotation(FollowCamera->GetComponentLocation(), monument->GetActorLocation()));
+				FRotator rot = UKismetMathLibrary::FindLookAtRotation(CameraBoom->GetComponentLocation(), monument->GetActorLocation());
+				rot = {0, rot.Yaw, 0};
+				CameraBoom->SetWorldRotation(rot);
 			}
 		}
 	}
