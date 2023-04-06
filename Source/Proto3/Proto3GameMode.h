@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Monument.h"
 #include "GameFramework/GameModeBase.h"
 #include "Proto3GameMode.generated.h"
 
@@ -13,6 +14,13 @@ class AProto3GameMode : public AGameModeBase
 
 public:
 	AProto3GameMode();
+
+	virtual void BeginPlay() override;
+
+	virtual void Tick(float DeltaSeconds) override;
+	
+	UPROPERTY(VisibleAnywhere)
+	TArray<AMonument*> Monuments;
 };
 
 
