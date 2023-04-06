@@ -171,7 +171,11 @@ void ASandSailPlayer::CheckForMonuments()
 			if (!monument->IsSeen)
 			{
 				monument->IsSeen = true;
-				FRotator rot = UKismetMathLibrary::FindLookAtRotation(CameraBoom->GetComponentLocation(), monument->GetActorLocation());
+				FVector start = CameraBoom->GetComponentLocation();
+				FVector end = CameraBoom->GetComponentLocation();
+				end.X = monument->GetActorLocation().X;
+				end.Y = monument->GetActorLocation().Y;
+				FRotator rot = UKismetMathLibrary::FindLookAtRotation(start, end);
 				rot = {0, rot.Yaw, 0};
 				CameraBoom->SetWorldRotation(rot);
 			}
