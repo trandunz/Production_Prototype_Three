@@ -28,4 +28,8 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	bool IsSeen{};
+	
+	UPROPERTY(EditAnywhere)
+    int MonumentNumber{};
+	
 };
