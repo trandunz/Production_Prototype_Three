@@ -11,6 +11,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Monument.h"
+#include "Obstacle.h"
 #include "Proto3GameMode.h"
 #include "Blueprint/UserWidget.h"
 #include "Controllers/ProtoPlayerController.h"
@@ -41,7 +42,9 @@ ASandSailPlayer::ASandSailPlayer()
 	
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
-	FollowCamera->bUsePawnControlRotation = false; 
+	FollowCamera->bUsePawnControlRotation = false;
+
+	Mesh->OnComponentHit.AddDynamic(this, &ASandSailPlayer::OnHit);
 }
 
 // Called when the game starts or when spawned
@@ -180,6 +183,15 @@ void ASandSailPlayer::CheckForMonuments()
 				CameraBoom->SetWorldRotation(rot);
 			}
 		}
+	}
+}
+
+void ASandSailPlayer::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	FVector NormalImpulse, const FHitResult& Hit)
+{
+	if (Hit.GetActor() && Hit.GetActor() != this && Cast<AObstacle>(Hit.GetActor()))
+	{
+		Hit.GetActor()->Destroy();
 	}
 }
 

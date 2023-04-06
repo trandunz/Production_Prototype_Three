@@ -3,6 +3,9 @@
 
 #include "Obstacle.h"
 
+#include "Kismet/GameplayStatics.h"
+#include "GameFramework/Character.h"
+
 // Sets default values
 AObstacle::AObstacle()
 {
@@ -15,9 +18,14 @@ AObstacle::AObstacle()
 	}
 }
 
-int AObstacle::GetDistanceFromPlayer()
+float AObstacle::GetDistanceFromPlayer()
 {
-	return 1;
+	if (auto character = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0))
+	{
+		return FVector::Distance(GetActorLocation(), character->GetActorLocation());
+	}
+	return 10000;
+	
 }
 
 // Called when the game starts or when spawned
@@ -31,6 +39,5 @@ void AObstacle::BeginPlay()
 void AObstacle::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
