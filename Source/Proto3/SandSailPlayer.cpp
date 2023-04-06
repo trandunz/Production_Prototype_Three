@@ -11,6 +11,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Monument.h"
+#include "Proto3GameMode.h"
 #include "Blueprint/UserWidget.h"
 #include "Controllers/ProtoPlayerController.h"
 #include "Widgets/GameHUD.h"
@@ -162,9 +163,8 @@ void ASandSailPlayer::SetupGameHUDComponent()
 
 void ASandSailPlayer::CheckForMonuments()
 {
-	TArray<AActor*> monuments{};
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AMonument::StaticClass(), monuments);
-	for(auto monument : monuments)
+	auto gamemode = Cast<AProto3GameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	for(auto monument : gamemode->Monuments)
 	{
 		FHitResult Hit;
 		FVector TraceStart = FollowCamera->GetComponentLocation();
@@ -174,13 +174,10 @@ void ASandSailPlayer::CheckForMonuments()
 		GetWorld()->LineTraceSingleByChannel(Hit, TraceStart, TraceEnd, ECC_Visibility, QueryParams);
 		if (FVector::Distance(GetActorLocation(), monument->GetActorLocation()) < 2000.0f && Hit.GetActor() && Cast<AMonument>(Hit.GetActor()))
 		{
-			if (auto castedMonument = Cast<AMonument>(monument))
+			if (!monument->IsSeen)
 			{
-				if (!castedMonument->IsSeen)
-				{
-					castedMonument->IsSeen = true;
-					FollowCamera->SetWorldRotation(UKismetMathLibrary::FindLookAtRotation(FollowCamera->GetComponentLocation(), castedMonument->GetActorLocation()));
-				}
+				monument->IsSeen = true;
+				FollowCamera->SetWorldRotation(UKismetMathLibrary::FindLookAtRotation(FollowCamera->GetComponentLocation(), monument->GetActorLocation()));
 			}
 		}
 	}
