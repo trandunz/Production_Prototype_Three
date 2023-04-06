@@ -11,6 +11,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Monument.h"
+#include "Obstacle.h"
 #include "Proto3GameMode.h"
 #include "Blueprint/UserWidget.h"
 #include "Controllers/ProtoPlayerController.h"
@@ -41,7 +42,9 @@ ASandSailPlayer::ASandSailPlayer()
 	
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
-	FollowCamera->bUsePawnControlRotation = false; 
+	FollowCamera->bUsePawnControlRotation = false;
+
+	Mesh->OnComponentHit.AddDynamic(this, &ASandSailPlayer::OnHit);
 }
 
 // Called when the game starts or when spawned
@@ -166,20 +169,29 @@ void ASandSailPlayer::CheckForMonuments()
 	auto gamemode = Cast<AProto3GameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	for(auto monument : gamemode->Monuments)
 	{
-		FHitResult Hit;
-		FVector TraceStart = FollowCamera->GetComponentLocation();
-		FVector TraceEnd = monument->GetActorLocation();
-		FCollisionQueryParams QueryParams;
-		QueryParams.AddIgnoredActor(this);
-		GetWorld()->LineTraceSingleByChannel(Hit, TraceStart, TraceEnd, ECC_Visibility, QueryParams);
-		if (FVector::Distance(GetActorLocation(), monument->GetActorLocation()) < 2000.0f && Hit.GetActor() && Cast<AMonument>(Hit.GetActor()))
+		if (FVector::Distance(GetActorLocation(), monument->GetActorLocation()) < 6000.0f)
 		{
 			if (!monument->IsSeen)
 			{
 				monument->IsSeen = true;
-				FollowCamera->SetWorldRotation(UKismetMathLibrary::FindLookAtRotation(FollowCamera->GetComponentLocation(), monument->GetActorLocation()));
+				FVector start = CameraBoom->GetComponentLocation();
+				FVector end = CameraBoom->GetComponentLocation();
+				end.X = monument->GetActorLocation().X;
+				end.Y = monument->GetActorLocation().Y;
+				FRotator rot = UKismetMathLibrary::FindLookAtRotation(start, end);
+				rot = {0, rot.Yaw, 0};
+				CameraBoom->SetWorldRotation(rot);
 			}
 		}
+	}
+}
+
+void ASandSailPlayer::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	FVector NormalImpulse, const FHitResult& Hit)
+{
+	if (Hit.GetActor() && Hit.GetActor() != this && Cast<AObstacle>(Hit.GetActor()))
+	{
+		Hit.GetActor()->Destroy();
 	}
 }
 
