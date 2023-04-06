@@ -10,10 +10,13 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Monument.h"
 #include "Blueprint/UserWidget.h"
 #include "Controllers/ProtoPlayerController.h"
 #include "Widgets/GameHUD.h"
 #include "Components/WindDirectionalSourceComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 ASandSailPlayer::ASandSailPlayer()
@@ -87,6 +90,8 @@ void ASandSailPlayer::Tick(float DeltaTime)
 		SetActorRotation(FRotator{}, ETeleportType::TeleportPhysics);
 		SailLength = 0.1f;
 	}
+
+	CheckForMonuments();
 }
 
 void ASandSailPlayer::Move(const FInputActionValue& Value)
@@ -151,6 +156,32 @@ void ASandSailPlayer::SetupGameHUDComponent()
 			GameHUD = CreateWidget<UGameHUD>(playerController, GameHUDPrefab);
 			GameHUD->AddToViewport();
 			playerController->SetInputMode(FInputModeGameOnly{});
+		}
+	}
+}
+
+void ASandSailPlayer::CheckForMonuments()
+{
+	TArray<AActor*> monuments{};
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AMonument::StaticClass(), monuments);
+	for(auto monument : monuments)
+	{
+		FHitResult Hit;
+		FVector TraceStart = FollowCamera->GetComponentLocation();
+		FVector TraceEnd = monument->GetActorLocation();
+		FCollisionQueryParams QueryParams;
+		QueryParams.AddIgnoredActor(this);
+		GetWorld()->LineTraceSingleByChannel(Hit, TraceStart, TraceEnd, ECC_Visibility, QueryParams);
+		if (FVector::Distance(GetActorLocation(), monument->GetActorLocation()) < 2000.0f && Hit.GetActor() && Cast<AMonument>(Hit.GetActor()))
+		{
+			if (auto castedMonument = Cast<AMonument>(monument))
+			{
+				if (!castedMonument->IsSeen)
+				{
+					castedMonument->IsSeen = true;
+					FollowCamera->SetWorldRotation(UKismetMathLibrary::FindLookAtRotation(FollowCamera->GetComponentLocation(), castedMonument->GetActorLocation()));
+				}
+			}
 		}
 	}
 }

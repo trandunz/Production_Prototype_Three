@@ -34,6 +34,8 @@ protected:
 
 	void SetupGameHUDComponent();
 
+	void CheckForMonuments();
+
 private:
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
