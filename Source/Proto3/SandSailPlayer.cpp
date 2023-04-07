@@ -44,7 +44,7 @@ ASandSailPlayer::ASandSailPlayer()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
 
-	Mesh->OnComponentHit.AddDynamic(this, &ASandSailPlayer::OnHit);
+	//Mesh->OnComponentHit.AddDynamic(this, &ASandSailPlayer::OnHit);
 }
 
 // Called when the game starts or when spawned
