@@ -90,7 +90,7 @@ void ASandSailPlayer::Tick(float DeltaTime)
 		|| Mesh->GetComponentRotation().Pitch < -85.0f)
 	{
 		GameHUD->FadeOut(0.5f);
-		SetActorLocation(GetActorLocation() + FVector::UpVector * 500.0f, false, nullptr, ETeleportType::TeleportPhysics);
+		SetActorLocation(GetActorLocation() + FVector::UpVector * 50.0f, false, nullptr, ETeleportType::TeleportPhysics);
 		SetActorRotation(FRotator{}, ETeleportType::TeleportPhysics);
 		SailLength = 0.1f;
 	}
