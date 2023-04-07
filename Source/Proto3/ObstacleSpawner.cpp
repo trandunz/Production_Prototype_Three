@@ -63,28 +63,50 @@ void AObstacleSpawner::CleanUpObstacles()
 
 void AObstacleSpawner::SpawnStarterObstacles()
 {
-	if (UNavigationSystemV1* navSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld()))
+	if (spawnBeforeLoad)
 	{
-		for (int i = 0; i < maxObstacles; i++)
+		if (UNavigationSystemV1* navSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld()))
 		{
-			FNavLocation Result;
-			navSys->GetRandomPoint(Result);
-			FVector finalLocation = Result.Location;
-			finalLocation.Z -= 40.0f;
-			int num = FMath::RandRange(0, ObstaclePrefabs.Num() - 1);
-			Obstacles[i] = GetWorld()->SpawnActor<AObstacle>(ObstaclePrefabs[num], finalLocation, FRotator());
+			for (int i = 0; i < maxObstacles; i++)
+			{
+				FNavLocation Result;
+				navSys->GetRandomPoint(Result);
+				FVector finalLocation = Result.Location;
+				finalLocation.Z -= 40.0f;
+				int num = FMath::RandRange(0, ObstaclePrefabs.Num() - 1);
+				Obstacles[i] = GetWorld()->SpawnActor<AObstacle>(ObstaclePrefabs[num], finalLocation, FRotator());
+			}
 		}
 	}
 	else
 	{
-		for (int i = 0; i < maxObstacles; i++)
+		if (UNavigationSystemV1* navSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld()))
 		{
-			int num = FMath::RandRange(0, ObstaclePrefabs.Num() - 1);
-			int x = FMath::RandRange(-100000, 100000);
-			int z = FMath::RandRange(3000, 10000);
-			int y = FMath::RandRange(-100000, 100000);
-			Obstacles[i] = GetWorld()->SpawnActor<AObstacle>(ObstaclePrefabs[num], FVector(x, y, z), FRotator());
-		}		
+			for (int i = 0; i < spawnBeforeLoadCount; i++)
+			{
+				FNavLocation Result;
+				navSys->GetRandomPoint(Result);
+				FVector finalLocation = Result.Location;
+				finalLocation.Z -= 40.0f;
+				int num = FMath::RandRange(0, ObstaclePrefabs.Num() - 1);
+				Obstacles[i] = GetWorld()->SpawnActor<AObstacle>(ObstaclePrefabs[num], finalLocation, FRotator());
+				currentObstacleCount += 1;
+			}
+		}
+	}
+}
+
+void AObstacleSpawner::SpawnObstaclesDuringPlay()
+{
+	if (UNavigationSystemV1* navSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld()))
+	{
+		FNavLocation Result;
+		navSys->GetRandomPoint(Result);
+		FVector finalLocation = Result.Location;
+		finalLocation.Z -= 40.0f;
+		int num = FMath::RandRange(0, ObstaclePrefabs.Num() - 1);
+		Obstacles[currentObstacleCount] = GetWorld()->SpawnActor<AObstacle>(ObstaclePrefabs[num], finalLocation, FRotator());
+		currentObstacleCount += 1;
 	}
 }
 
@@ -108,7 +130,10 @@ void AObstacleSpawner::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//CleanUpObstacles();
+	if (!spawnBeforeLoad && currentObstacleCount != maxObstacles)
+	{
+		SpawnObstaclesDuringPlay();
+	}
 
 }
 

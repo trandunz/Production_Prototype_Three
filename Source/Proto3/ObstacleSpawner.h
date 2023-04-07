@@ -18,6 +18,12 @@ public:
 	AObstacleSpawner();
 
 	UPROPERTY(EditAnywhere)
+	bool spawnBeforeLoad = false;
+
+	UPROPERTY(EditAnywhere)
+	int32 spawnBeforeLoadCount = 200;
+	
+	UPROPERTY(EditAnywhere)
 	TArray<TSubclassOf<AObstacle>> ObstaclePrefabs;
 
 	UPROPERTY(VisibleAnywhere)
@@ -33,6 +39,8 @@ public:
 	void SpawnObstacle(int _num);
 	void CleanUpObstacles();
 	void SpawnStarterObstacles();
+
+	void SpawnObstaclesDuringPlay();
 
 protected:
 	// Called when the game starts or when spawned
