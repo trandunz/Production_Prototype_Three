@@ -27,6 +27,19 @@ public:
 	class UImage* Instructions;
 
 	float InstructionsTime{8.0f};
+
+	UPROPERTY(VisibleAnywhere, meta=(BindWidget))
+	class UImage* JournalUpdated;
+	UPROPERTY(VisibleAnywhere, meta=(BindWidget))
+	class UTextBlock* JournalUpdatedText;
+
+	bool MonumentShowing{};
+
+	bool Monument1Seen{};
+	bool Monument2Seen{};
+
+	float JournalTime{5.0f};
+	float JournalTimer{};
 	
 public:
 	UFUNCTION(BlueprintCallable)
