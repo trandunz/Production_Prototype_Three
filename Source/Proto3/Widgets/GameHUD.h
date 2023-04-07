@@ -22,6 +22,12 @@ public:
 
 	UPROPERTY(VisibleAnywhere, meta=(BindWidget))
 	class UImage* FadeImage;
+
+	UPROPERTY(VisibleAnywhere, meta=(BindWidget))
+	class UImage* Instructions;
+
+	float InstructionsTime{8.0f};
+	
 public:
 	UFUNCTION(BlueprintCallable)
 	void EnableDisableMenu();

@@ -43,6 +43,16 @@ void UGameHUD::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	{
 		FadeImage->SetColorAndOpacity(FLinearColor{0,0,0,0});
 	}
+
+
+	// Starting instructions
+	InstructionsTime -= InDeltaTime;
+	if (InstructionsTime <= 0)
+	{
+		Instructions->SetVisibility(ESlateVisibility::Hidden);
+		InstructionsTime = 0;
+	}
+	
 }
 
 void UGameHUD::EnableDisableMenu()
